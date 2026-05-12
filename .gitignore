@@ -216,3 +216,12 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Large datasets
+*.csv
+
+# Excel temporary files
+~$*.xlsx
+
+# Excel binary files
+*.xlsb

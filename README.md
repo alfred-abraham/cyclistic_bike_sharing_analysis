@@ -142,17 +142,18 @@ GROUP BY month_name, month_number, member_casual
 ORDER BY month_number;
 ```
 
-## Trips by Day of Week
+## Trips by Weekend and Weekday
 
 ```sql
 SELECT
-    day_of_week_name,
-    day_of_week,
+    CASE
+        WHEN day_of_week IN (1,7) THEN 'Weekend'
+        ELSE 'Weekday'
+    END AS ride_period,
     member_casual,
-    COUNT(*) AS trip_count
+    COUNT(*) AS total_trips
 FROM divvy_trips_clean
-GROUP BY day_of_week_name, day_of_week, member_casual
-ORDER BY day_of_week;
+GROUP BY ride_period, member_casual;
 ```
 
 ## Average Ride Length
@@ -197,12 +198,11 @@ ORDER BY ride_hour;
 
 ## 1. Strong Seasonal Trends
 
-Both member and casual ridership increase significantly during warmer months and decline during winter.
+Both member and casual ridership peak during the summer months and decline during the winter months
 
 However:
 
-* Casual ridership fluctuates much more dramatically
-* Member ridership remains relatively more stable throughout the year
+* Both members and casual riders have different peaks; the former peak in August while the latter peak in July. 
 
 ---
 
@@ -210,14 +210,11 @@ However:
 
 Analysis by day of week showed:
 
-* Casual riders peak on weekends
-* Members ride more consistently during weekdays
+* Casual riders make a significantly higher percentage of trips during the weekend
 
 This suggests:
 
-* Members primarily use bikes for commuting
-* Casual riders primarily use bikes recreationally
-
+* Casual riders use the bikes more recreationally than members do. 
 ---
 
 ## 3. Casual Riders Take Longer Trips

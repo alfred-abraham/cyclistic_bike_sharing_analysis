@@ -202,7 +202,7 @@ ORDER BY ride_hour;
 
 However:
 
-* Members and casual riders have different peaks; the former peak in August while the latter peak in July. 
+* Members and casual riders have different peaks; the former peak in August while the latter peak in July 
 
 ---
 

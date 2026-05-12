@@ -198,11 +198,11 @@ ORDER BY ride_hour;
 
 ## 1. Strong Seasonal Trends
 
-Both member and casual ridership peak during the summer months and decline during the winter months
+* Both member and casual ridership peak during the summer months and decline during the winter months
 
 However:
 
-* Both members and casual riders have different peaks; the former peak in August while the latter peak in July. 
+* Members and casual riders have different peaks; the former peak in August while the latter peak in July. 
 
 ---
 

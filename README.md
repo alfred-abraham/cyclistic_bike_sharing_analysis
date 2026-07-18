@@ -113,12 +113,6 @@ EXTRACT(EPOCH FROM (ended_at - started_at))/60 AS ride_length_minutes
 EXTRACT(MONTH FROM started_at) AS month_number
 ```
 
-### Extract weekday
-
-```sql
-EXTRACT(DOW FROM started_at) AS day_of_week
-```
-
 ### Extract ride hour
 
 ```sql

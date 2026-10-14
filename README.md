@@ -32,6 +32,20 @@ See the [cleaning script](sql_files/Table%20Creation%20and%20Data%20Cleaning.sql
 
 These patterns support testing seasonal or weekend membership options and marketing recreational benefits to frequent casual riders.
 
+### Monthly Trip Trends
+
+![Monthly trips by rider category](visuals/Monthly%20Trips.png)
+
+### Weekend and Weekday Usage
+
+![Weekend and weekday trips by rider category](visuals/Weekend%20Weekday%20Graph.png)
+
+### Average Ride Length
+
+![Average ride length by rider category](visuals/Average%20Ride%20Length.png)
+
+### Hourly Trip Patterns
+
 ![Hourly trips by rider category](visuals/Hourly%20Trips.png)
 
 More charts are available in [visuals](visuals/). The [case-study presentation](Cyclistic%20Case%20Study.pptx) summarizes the analysis.

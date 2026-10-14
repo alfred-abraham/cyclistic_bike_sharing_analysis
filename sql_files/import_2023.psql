@@ -1,0 +1,16 @@
+\set ON_ERROR_STOP on
+\i sql_files/01_create_raw.sql
+\copy divvy_trips_raw FROM 'data/202301-divvy-tripdata.csv' WITH (FORMAT csv, HEADER true)
+\copy divvy_trips_raw FROM 'data/202302-divvy-tripdata.csv' WITH (FORMAT csv, HEADER true)
+\copy divvy_trips_raw FROM 'data/202303-divvy-tripdata.csv' WITH (FORMAT csv, HEADER true)
+\copy divvy_trips_raw FROM 'data/202304-divvy-tripdata.csv' WITH (FORMAT csv, HEADER true)
+\copy divvy_trips_raw FROM 'data/202305-divvy-tripdata.csv' WITH (FORMAT csv, HEADER true)
+\copy divvy_trips_raw FROM 'data/202306-divvy-tripdata.csv' WITH (FORMAT csv, HEADER true)
+\copy divvy_trips_raw FROM 'data/202307-divvy-tripdata.csv' WITH (FORMAT csv, HEADER true)
+\copy divvy_trips_raw FROM 'data/202308-divvy-tripdata.csv' WITH (FORMAT csv, HEADER true)
+\copy divvy_trips_raw FROM 'data/202309-divvy-tripdata.csv' WITH (FORMAT csv, HEADER true)
+\copy divvy_trips_raw FROM 'data/202310-divvy-tripdata.csv' WITH (FORMAT csv, HEADER true)
+\copy divvy_trips_raw FROM 'data/202311-divvy-tripdata.csv' WITH (FORMAT csv, HEADER true)
+\copy divvy_trips_raw FROM 'data/202312-divvy-tripdata.csv' WITH (FORMAT csv, HEADER true)
+\i 'sql_files/Table Creation and Data Cleaning.sql'
+\i 'sql_files/SQL Data Exploration Queries.sql'

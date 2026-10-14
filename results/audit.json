@@ -1,0 +1,10 @@
+{
+  "raw_rows": 5719877,
+  "distinct_ids": 5719877,
+  "missing_timestamps": 0,
+  "nonpositive_durations": 1269,
+  "over_24_hours": 6418,
+  "clean_rows": 5712190,
+  "period": "2023-01-01 through 2023-12-31",
+  "engine": "DuckDB; TO_CHAR adapter only; PostgreSQL syntax parsed separately"
+}

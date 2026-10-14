@@ -1,402 +1,59 @@
-# Cyclistic Bike-Share Analysis (SQL + Excel)
+# Cyclistic Bike-Share Analysis
 
-## Project Overview
+## Overview
 
-This project analyzes one year of Cyclistic bike-share trip data to identify behavioral differences between annual members and casual riders. The primary business objective is to generate recommendations for converting casual riders into annual members.
+A SQL and Excel analysis of bike-share usage that compares annual members with casual riders and develops membership recommendations.
 
-The project was completed using:
+## Objective
 
-* PostgreSQL for data cleaning, transformation, and querying
-* Excel PivotTables and PivotCharts for visualization
-* SQL aggregation and time-based analysis for business insights
+Answer: **How do annual members and casual riders use Cyclistic bikes differently?** Use those differences to suggest ways to convert casual riders into annual members.
 
----
+## Data
 
-# Business Task
+The analysis uses 12 monthly Divvy / Cyclistic trip CSVs covering one year and more than five million rides. Fields include ride identifiers, bike types, timestamps, stations, coordinates, and membership status. The source CSVs are not included in this repository.
 
-Cyclistic wants to increase the number of annual memberships because members are more profitable long-term than casual riders.
+## Approach
 
-The goal of this analysis is to answer:
+1. Combine monthly trip files in PostgreSQL.
+2. Remove records with missing timestamps or end times that do not follow start times.
+3. Derive ride duration, month, and weekday fields.
+4. Aggregate trips by month, weekday/weekend, hour, bike type, and rider category.
+5. Export query results to Excel for PivotTables and PivotCharts.
 
-> How do annual members and casual riders use Cyclistic bikes differently?
+See the [cleaning script](sql_files/Table%20Creation%20and%20Data%20Cleaning.sql) and [analysis queries](sql_files/SQL%20Data%20Exploration%20Queries.sql) for the implementation.
 
-The findings are then used to create data-driven business recommendations aimed at converting casual riders into members.
+## Results
 
----
+- Member trips peaked in August; casual trips peaked in July.
+- Casual riders made a higher proportion of weekend trips and consistently took longer rides.
+- Members showed morning (7–9 AM) and evening (4–6 PM) peaks, suggesting commuting.
+- Casual usage increased more gradually and peaked later in the day, suggesting recreation.
+- Bike-type proportions were similar across the two groups.
 
-# Dataset
+These patterns support testing seasonal or weekend membership options and marketing recreational benefits to frequent casual riders.
 
-Dataset Source:
+![Hourly trips by rider category](visuals/Hourly%20Trips.png)
 
-* Divvy / Cyclistic historical trip datasets
+More charts are available in [visuals](visuals/). The [case-study presentation](Cyclistic%20Case%20Study.pptx) summarizes the analysis.
 
-Files Used:
+## Tools
 
-* 12 monthly CSV files covering one full year of ride activity
+PostgreSQL, SQL, and Excel PivotTables and PivotCharts.
 
-Approximate dataset size:
+## How to Run
 
-* Over 5 million ride records
+1. Obtain the 12 monthly trip CSVs used for the case study.
+2. Create a PostgreSQL database and run the raw-table creation statement in [the cleaning script](sql_files/Table%20Creation%20and%20Data%20Cleaning.sql).
+3. Prepare and import the monthly data into `divvy_trips_raw`, matching its schema. The script expects a `day_of_week` field with Sunday = 1 and Saturday = 7; derive this field if it is absent from the source files.
+4. Run the remaining cleaning statements, then the [exploration queries](sql_files/SQL%20Data%20Exploration%20Queries.sql).
+5. Export the aggregated results to Excel and create PivotTables and PivotCharts. Sort months using `month_number`.
 
-Key columns included:
+## Limitations and Next Steps
 
-* ride_id
-* rideable_type
-* started_at
-* ended_at
-* start_station_name
-* end_station_name
-* member_casual
-* start_lat
-* start_lng
-* end_lat
-* end_lng
+- Usage patterns suggest motivations but do not establish why individual riders travel.
+- Membership recommendations have not been validated through conversion experiments.
+- Extensions include station-level analysis, median ride duration, weather effects, and rider retention.
 
-Derived columns created during cleaning:
+## License
 
-* ride_length_minutes
-* month_name
-* month_number
-* day_of_week
-* day_of_week_name
-* ride_hour
-
----
-
-# Tools & Technologies
-
-## PostgreSQL
-
-Used for:
-
-* Combining datasets
-* Cleaning data
-* Aggregations
-* Time-based analysis
-* SQL querying
-
-## Excel
-
-Used for:
-
-* PivotTables
-* PivotCharts
-* Business visualization
-* Presentation preparation
-
----
-
-# Data Cleaning & Preparation
-
-Several preprocessing steps were completed before analysis.
-
-## Cleaning Steps
-
-* Combined all 12 monthly datasets into one PostgreSQL table
-* Removed rows with missing timestamps
-* Generated ride duration in minutes
-* Created month and weekday derived fields
-* Created hour-of-day field using SQL date extraction
-* Verified chronological sorting using month_number
-
-## Example SQL Transformations
-
-### Create ride duration
-
-```sql
-EXTRACT(EPOCH FROM (ended_at - started_at))/60 AS ride_length_minutes
-```
-
-### Extract month number
-
-```sql
-EXTRACT(MONTH FROM started_at) AS month_number
-```
-
-### Extract ride hour
-
-```sql
-EXTRACT(HOUR FROM started_at) AS ride_hour
-```
-
----
-
-# Key SQL Queries
-
-## Monthly Trip Trends
-
-```sql
-SELECT
-    month_name,
-    month_number,
-    member_casual,
-    COUNT(*) AS trip_count
-FROM divvy_trips_clean
-GROUP BY month_name, month_number, member_casual
-ORDER BY month_number;
-```
-
-## Trips by Weekend and Weekday
-
-```sql
-SELECT
-    CASE
-        WHEN day_of_week IN (1,7) THEN 'Weekend'
-        ELSE 'Weekday'
-    END AS ride_period,
-    member_casual,
-    COUNT(*) AS total_trips
-FROM divvy_trips_clean
-GROUP BY ride_period, member_casual;
-```
-
-## Average Ride Length
-
-```sql
-SELECT
-    month_name,
-    month_number,
-    member_casual,
-    AVG(ride_length_minutes) AS average_ride_length
-FROM divvy_trips_clean
-GROUP BY month_name, month_number, member_casual
-ORDER BY month_number;
-```
-
-## Bike Type Usage
-
-```sql
-SELECT
-    rideable_type,
-    member_casual,
-    COUNT(*) AS total_trips
-FROM divvy_trips_clean
-GROUP BY rideable_type, member_casual;
-```
-
-## Hour-of-Day Usage
-
-```sql
-SELECT
-    EXTRACT(HOUR FROM started_at) AS ride_hour,
-    member_casual,
-    COUNT(*) AS trip_count
-FROM divvy_trips_clean
-GROUP BY ride_hour, member_casual
-ORDER BY ride_hour;
-```
-
----
-
-# Key Findings
-
-## 1. Strong Seasonal Trends
-
-* Both member and casual ridership peak during the summer months and decline during the winter months
-
-However:
-
-* Members and casual riders have different peaks; the former peak in August while the latter peak in July 
-
----
-
-## 2. Casual Riders Ride More on Weekends
-
-Analysis by day of week showed:
-
-* Casual riders make a significantly higher percentage of trips during the weekend
-
-This suggests:
-
-* Casual riders use the bikes more recreationally than members do. 
----
-
-## 3. Casual Riders Take Longer Trips
-
-Average ride duration analysis revealed:
-
-* Casual riders consistently take longer trips than members
-* Casual ride lengths peak during summer months
-* Member ride durations remain relatively stable year-round
-
-This reinforces the recreational usage pattern among casual riders.
-
----
-
-## 4. Hour-of-Day Trends Reveal Commuting Patterns
-
-The hour-of-day analysis showed one of the strongest behavioral differences.
-
-### Members
-
-Members exhibit:
-
-* Morning peaks around 7–9 AM
-* Large evening peaks around 4–6 PM
-
-This strongly suggests commuter behavior.
-
-### Casual Riders
-
-Casual riders:
-
-* Increase more gradually throughout the day
-* Peak later in the afternoon/evening
-* Show flatter usage patterns overall
-
-This suggests leisure and recreational usage.
-
----
-
-## 5. Bike Type Usage Was Similar
-
-Both rider groups used:
-
-* classic bikes
-* electric bikes
-
-in relatively similar proportions.
-
-Bike type differences were less strategically useful than behavioral timing differences.
-
----
-
-# Business Recommendations
-
-Based on the findings, the following recommendations were proposed:
-
-## 1. Introduce Weekend Membership Options
-
-Casual riders heavily use bikes during weekends.
-
-Cyclistic could introduce:
-
-* weekend-only memberships
-* flexible short-term plans
-* seasonal subscriptions
-
----
-
-## 2. Target Frequent Casual Riders
-
-Use app/email campaigns to target riders who:
-
-* repeatedly rent during weekends
-* take longer rides
-* frequently use the same stations
-
-These riders are likely strong membership conversion candidates.
-
----
-
-## 3. Emphasize Recreational Benefits in Marketing
-
-Marketing for casual riders should focus on:
-
-* leisure riding
-* recreation
-* tourism
-* summer activities
-
-rather than commuter-focused messaging.
-
----
-
-## 4. Introduce Seasonal Passes
-
-Because casual ridership spikes heavily during warmer months, Cyclistic could offer:
-
-* summer memberships
-* 3–4 month seasonal passes
-* discounted warm-weather plans
-
----
-
-# Challenges Encountered
-
-Several technical and analytical challenges were encountered during the project:
-
-* Importing and combining large CSV datasets
-* Handling inconsistent column structures
-* Cleaning null timestamp values
-* Managing chronological month sorting in Excel PivotCharts
-* Exporting SQL query results for visualization
-* Understanding how Excel handles text-based date categories
-
-These challenges provided valuable experience in:
-
-* ETL workflows
-* data cleaning
-* SQL aggregation
-* business intelligence visualization
-
----
-
-# Skills Demonstrated
-
-This project demonstrates:
-
-## SQL Skills
-
-* GROUP BY
-* ORDER BY
-* Aggregate functions
-* Date/time extraction
-* CASE logic
-* Data cleaning
-* Multi-file dataset integration
-
-## Data Analysis Skills
-
-* Behavioral segmentation
-* Trend analysis
-* Time-series analysis
-* Business recommendation generation
-
-## Visualization Skills
-
-* PivotTables
-* PivotCharts
-* Data storytelling
-* Business presentation design
-
----
-
-# Conclusion
-
-This analysis identified clear behavioral differences between annual members and casual riders.
-
-Members primarily exhibit commuter-oriented usage patterns:
-
-* weekday riding
-* rush-hour peaks
-* shorter, consistent trips
-
-Casual riders exhibit more recreational behavior:
-
-* weekend riding
-* longer rides
-* strong seasonality
-* afternoon/evening usage peaks
-
-These insights support targeted marketing and membership strategies designed to convert casual riders into long-term annual members.
-
----
-
-# Future Improvements
-
-Potential future enhancements include:
-
-* Geographic station analysis
-* Interactive dashboards in Power BI or Tableau
-* Predictive modeling for membership conversion
-* Median ride duration analysis
-* Weather-based ride analysis
-* Rider retention analysis
-
----
-
-# Author
-
-Alfred Abraham
-
+See [LICENSE](LICENSE) for repository licensing. Refer to the dataset source for its usage terms.

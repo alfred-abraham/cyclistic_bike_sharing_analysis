@@ -227,3 +227,4 @@ __marimo__/
 .venv/
 .ipynb_checkpoints/
 data/
+!results/*.csv
